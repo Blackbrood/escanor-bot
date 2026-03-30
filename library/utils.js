@@ -1,13 +1,12 @@
 /*
-> Recode script give credits to›
-Giddy Tennor(Trashcore)
 
-📝 | Created By Trashcore
-🖥️ | Base Ori By Trashcore 
-📌 |Credits Putrazy Xd
-📱 |Chat wa:254104245659
-👑 |Github: Tennor-modz 
-✉️ |Email: giddytennor@gmail.com
+
+📝 | Edited By: Sins.Outlaw
+🖥️ | Base Ori By: Trashcore 
+📌 | Credits: Putrazy Xd
+📱 | WhatsApp: +2347086412154
+👑 | Github: Blackbrood
+✉️ | Email: victorolutayo3@gmail.com
 */
 
 const fs = require('fs');
