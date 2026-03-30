@@ -40,12 +40,65 @@ function checkFFmpeg() {
     });
 }
 
-// ======= Safe jidDecode fallback =======
 function jidDecode(jid = '') {
     if (!jid.includes(':')) return null;
     const [user, rest] = jid.split(':');
     const server = rest?.split('@')[1] ? `@${rest.split('@')[1]}` : '';
     return { user, server: server.replace('@', '') };
+}
+
+async function detectPlatform(url) {
+    if (/instagram\.com/i.test(url)) return 'instagram';
+    if (/facebook|fb\.watch/i.test(url)) return 'facebook';
+    if (/tiktok\.com/i.test(url)) return 'tiktok';
+    if (/twitter\.com|x\.com/i.test(url)) return 'twitter';
+    return null;
+}
+
+async function downloadMedia(url) {
+    const platform = await detectPlatform(url);
+    if (!platform) throw new Error('Unsupported platform');
+
+    try {
+        const { data } = await axios.get(
+            `https://api.agatz.xyz/api/${platform}?url=${encodeURIComponent(url)}`
+        );
+
+        if (data && data.data) {
+            return {
+                platform,
+                type: data.data.type || 'video',
+                url: data.data.url || data.data.video || data.data.image
+            };
+        }
+    } catch (e) {
+        console.log('API failed, using fallback...');
+    }
+
+    const form = new URLSearchParams();
+    form.append('q', url);
+    form.append('vt', 'home');
+
+    const { data } = await axios.post('https://yt5s.io/api/ajaxSearch', form);
+    if (!data || data.status !== 'ok') {
+        throw new Error('Scraper failed');
+    }
+
+    const $ = cheerio.load(data.data);
+    const mediaUrl =
+        $('a[title="Download Video"]').attr('href') ||
+        $('a.download-link-fb').attr('href') ||
+        $('img').attr('src');
+
+    if (!mediaUrl) {
+        throw new Error('No media found');
+    }
+
+    return {
+        platform,
+        type: mediaUrl.includes('.mp4') ? 'video' : 'image',
+        url: mediaUrl
+    };
 }
 
 module.exports = async function handleCommand(
@@ -88,7 +141,7 @@ module.exports = async function handleCommand(
         ? (groupMeta?.subject || 'Unknown Group')
         : pushname;
 
-    const botNumber = trashcore.user?.id?.split(':')[0] + '@s.whatsapp.net';
+    const botNumber = `${trashcore.user?.id?.split(':')[0]}@s.whatsapp.net`;
     const isOwner = sender === botNumber;
 
     const reply = async (text) => {
@@ -118,62 +171,12 @@ module.exports = async function handleCommand(
 
     const getGroupData = async () => {
         const metadata = groupMeta || await trashcore.groupMetadata(from);
-        const admins = metadata.participants.filter(p => p.admin).map(p => p.id);
+        const admins = metadata.participants.filter((p) => p.admin).map((p) => p.id);
         const botIsAdmin = admins.includes(botNumber);
         const senderIsAdmin = admins.includes(sender);
         return { metadata, admins, botIsAdmin, senderIsAdmin };
     };
-// async function detectPlatform(url) {
-  if (/instagram\.com/.test(url)) return 'instagram';
-  if (/facebook|fb\.watch/.test(url)) return 'facebook';
-  if (/tiktok\.com/.test(url)) return 'tiktok';
-  if (/twitter\.com|x\.com/.test(url)) return 'twitter';
-  return null;
-}
 
-// 🔥 MAIN DOWNLOADER
-async function downloadMedia(url) {
-  const platform = await detectPlatform(url);
-  if (!platform) throw 'Unsupported platform';
-
-  // ⚡ PRIMARY API (you can replace with better one later)
-  try {
-    const { data } = await axios.get(`https://api.agatz.xyz/api/${platform}?url=${encodeURIComponent(url)}`);
-
-    if (data && data.data) {
-      return {
-        platform,
-        type: data.data.type || 'video',
-        url: data.data.url || data.data.video || data.data.image
-      };
-    }
-  } catch (e) {
-    console.log('API failed, using fallback...');
-  }
-
-  // 🔁 FALLBACK SCRAPER (yt5s)
-  const form = new URLSearchParams();
-  form.append('q', url);
-  form.append('vt', 'home');
-
-  const { data } = await axios.post('https://yt5s.io/api/ajaxSearch', form);
-  if (!data || data.status !== 'ok') throw 'Scraper failed';
-
-  const $ = cheerio.load(data.data);
-
-  let mediaUrl =
-    $('a[title="Download Video"]').attr('href') ||
-    $('a.download-link-fb').attr('href') ||
-    $('img').attr('src');
-
-  if (!mediaUrl) throw 'No media found';
-
-  return {
-    platform,
-    type: mediaUrl.includes('.mp4') ? 'video' : 'image',
-    url: mediaUrl
-  };
-}
     // --- 🚨 ANTILINK AUTO CHECK ---
     if (isGroup && global.antilink?.[from]?.enabled) {
         const linkPattern = /(https?:\/\/[^\s]+)/gi;
@@ -233,7 +236,7 @@ async function downloadMedia(url) {
         const settings = global.antibadword[from];
         const badwords = settings.words || [];
         const textMsg = body.toLowerCase();
-        const found = badwords.find(word => textMsg.includes(word.toLowerCase()));
+        const found = badwords.find((word) => textMsg.includes(word.toLowerCase()));
 
         if (found) {
             const { botIsAdmin, senderIsAdmin } = await getGroupData();
