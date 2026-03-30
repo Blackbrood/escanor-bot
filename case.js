@@ -361,39 +361,36 @@ Owner: Trashcore`);
 ║   "𝗧𝗵𝗲 𝗢𝗻𝗲 𝗪𝗵𝗼 𝗦𝘁𝗮𝗻𝗱𝘀 𝗔𝗯𝗼𝘃𝗲 𝗔𝗹𝗹"   ║  
 ╚════════════════════════════╝`;
 
-              const escanorClips = [
-    'https://files.catbox.moe/yd6w3c.mp4',
-    'https://files.catbox.moe/3rjbby.mp4',
-    'https://files.catbox.moe/mn0u29.mp4',
-    'https://files.catbox.moe/eyoq4v.mp4'
-];
+                const escanorClips = [
+                    'https://files.catbox.moe/yd6w3c.mp4',
+                    'https://files.catbox.moe/3rjbby.mp4',
+                    'https://files.catbox.moe/mn0u29.mp4',
+                    'https://files.catbox.moe/eyoq4v.mp4'
+                ];
 
-function getRandomEscanor() {
-    return escanorClips[Math.floor(Math.random() * escanorClips.length)];
-}
+                const getRandomEscanor = () =>
+                    escanorClips[Math.floor(Math.random() * escanorClips.length)];
 
-try {
-    const videoUrl = getRandomEscanor();
+                try {
+                    const videoUrl = getRandomEscanor();
 
-    await trashcore.sendMessage(from, {
-        video: { url: videoUrl },
-        caption: stylishReply(menuText),
-        gifPlayback: true,
-        mimetype: 'video/mp4' // 🔥 important for WhatsApp
-    }, { quoted: m });
-
-} catch (err) {
-    console.error('Escanor video failed:', err);
-    await reply(menuText);
-}
+                    await trashcore.sendMessage(
+                        from,
+                        {
+                            video: { url: videoUrl },
+                            caption: stylishReply(menuText),
+                            gifPlayback: true,
+                            mimetype: 'video/mp4'
+                        },
+                        { quoted: m }
+                    );
+                } catch (err) {
+                    console.error('Escanor video failed:', err);
+                    await reply(menuText);
+                }
                 break;
             }
-        }
-    } catch (err) {
-        console.error(chalk.red('Command Handler Error:'), err);
-        await reply('An error occurred while processing your command.');
-    }
-};
+
             // ================= WEATHER =================
             case 'weather': {
                 try {
@@ -1776,6 +1773,12 @@ case 'mode': {
                 }
                 break;
             }
+                        }
+    } catch (err) {
+        console.error(chalk.red('Command Handler Error:'), err);
+        await reply('An error occurred while processing your command.');
+    }
+};
 
             // ================= OWNER ONLY =================
             default: {
