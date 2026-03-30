@@ -1,25 +1,18 @@
 module.exports = {
-  BOT_NAME: 'Trashcore',
-  OWNER_NAME: 'Trashvore',
-  OWNER_NUMBER: '255778104517',
+  BOT_NAME: 'Escanor',
+  OWNER_NAME: 'Sins.Outlaw',
+  OWNER_NUMBER: '2347086412154',
   SESSION_DIR: './trash_baileys',
   NO_PREFIX: true,
   STATUS_VIEW: true
 };
 
-
-
-
-
-
 /*
-> Recode script give credits to›
-Giddy Tennor(Trashcore)
 
-📝 | Created By Trashcore
-🖥️ | Base Ori By Trashcore 
-📌 |Credits Putrazy Xd
-📱 |Chat wa:254104245659
-👑 |Github: Tennor-modz 
-✉️ |Email: giddytennor@gmail.com
+📝 | Edited By: Sins.Outlaw
+🖥️ | Base Ori By: Trashcore 
+📌 | Credits: Putrazy Xd
+📱 | WhatsApp: +2347086412154
+👑 | Github: Blackbrood
+✉️ | Email: victorolutayo3@gmail.com
 */
