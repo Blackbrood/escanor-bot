@@ -2,13 +2,12 @@
 
 <p align="center">
 <a href="https://github.com/Blackbrood">
-<img title="Author" src="https://i.ibb.co/39rrkttP/455944eb4d07a365.jpg">
+<img title="Author" src="https://files.catbox.moe/vrmev3.jpg">
 </a>
 </p>
 
 <p align="center">
 Escanor is an automated WhatsApp bot built by <b>Sins.Outlaw</b> using Baileys and Node.js.<br>
-This project is based on Trashcore (Giddy Tennor). Credits to the original developer.
 </p>
 
 ---
